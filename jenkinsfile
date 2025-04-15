@@ -13,11 +13,10 @@ pipeline {
 
     stages {
         stage('Checkout') {
-        steps {
-            git branch: 'main', url: 'https://github.com/Divyanshi-Pathak/docker-kubernetes.git'
+            steps {
+                git branch: 'main', url: 'https://github.com/Divyanshi-Pathak/docker-kubernetes.git'
+            }
         }
-    }
-
 
         stage('Azure Login') {
             steps {
@@ -36,11 +35,19 @@ pipeline {
             }
         }
 
-        stage('Terraform Init & Apply') {
+        stage('Terraform Init & Plan') {
             steps {
                 dir('Terraform') {
                     bat 'terraform init'
-                    bat 'terraform apply -auto-approve'
+                    bat 'terraform plan -out=tfplan'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                dir('Terraform') {
+                    bat 'terraform apply -auto-approve tfplan'
                 }
             }
         }
@@ -66,7 +73,6 @@ pipeline {
         stage('Deploy to AKS') {
             steps {
                 bat 'kubectl apply -f deployment.yaml'
-                
             }
         }
     }
