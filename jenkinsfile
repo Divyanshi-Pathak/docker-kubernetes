@@ -13,10 +13,10 @@ pipeline {
 
     stages {
         stage('Checkout') {
-    steps {
-        git branch: 'main', url: 'https://github.com/Divyanshi-Pathak/docker-kubernetes.git'
+        steps {
+            git branch: 'main', url: 'https://github.com/Divyanshi-Pathak/docker-kubernetes.git'
+        }
     }
-}
 
 
         stage('Azure Login') {
