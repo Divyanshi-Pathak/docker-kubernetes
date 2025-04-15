@@ -1,1 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        ACR_NAME = 'integratedacr122002'
+        IMAGE_NAME = 'myapi'
+        IMAGE_TAG = 'latest'
+        AKS_RESOURCE_GROUP = 'rg-integrated-aks'
+        AKS_CLUSTER_NAME = 'integratedaks122002'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Terraform Init & Apply') {
+            steps {
+                dir('terraform') {
+                    bat 'terraform init'
+                    bat 'terraform apply -auto-approve'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat "docker build -t %ACR_NAME%/%IMAGE_NAME%:%IMAGE_TAG% ."
+            }
+        }
+
+        stage('Login to ACR & Push Image') {
+            steps {
+                bat "az acr login --name %ACR_NAME:.azurecr.io=%"
+                bat "docker push %ACR_NAME%/%IMAGE_NAME%:%IMAGE_TAG%"
+            }
+        }
+
+        stage('Deploy to AKS') {
+            steps {
+                bat "az aks get-credentials --resource-group %AKS_RESOURCE_GROUP% --name %AKS_CLUSTER_NAME% --overwrite-existing"
+                bat "kubectl apply -f k8s\\deployment.yaml"
+            }
+        }
+    }
+}
 
