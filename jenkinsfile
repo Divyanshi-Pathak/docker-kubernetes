@@ -4,7 +4,7 @@ pipeline {
     environment {
         AZURE_CREDENTIALS_ID = 'dk-service-principle' // Must be configured in Jenkins credentials
         ACR_NAME = "integratedacr122002"
-        ACR_LOGIN_SERVER = "integratedacr12200.azurecr.io"
+        ACR_LOGIN_SERVER = "integratedacr122002.azurecr.io"
         IMAGE_NAME = "myapi"
         TAG = "latest"
         RESOURCE_GROUP = "rg-integrated-aks"
@@ -13,10 +13,11 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Divyanshi-Pathak/docker-kubernetes.git'
-            }
-        }
+    steps {
+        git branch: 'main', url: ''
+    }
+}
+
 
         stage('Azure Login') {
             steps {
@@ -35,19 +36,11 @@ pipeline {
             }
         }
 
-        stage('Terraform Init & Plan') {
+        stage('Terraform Init & Apply') {
             steps {
-                dir('Terraform') {
+                dir('terraform_1') {
                     bat 'terraform init'
-                    bat 'terraform plan -out=tfplan'
-                }
-            }
-        }
-
-        stage('Terraform Apply') {
-            steps {
-                dir('Terraform') {
-                    bat 'terraform apply -auto-approve tfplan'
+                    bat 'terraform apply -auto-approve'
                 }
             }
         }
@@ -73,16 +66,17 @@ pipeline {
         stage('Deploy to AKS') {
             steps {
                 bat 'kubectl apply -f deployment.yaml'
+                
             }
         }
     }
 
     post {
         failure {
-            echo "Build failed."
+            echo "❌ Build failed."
         }
         success {
-            echo "Application deployed successfully to AKS!"
+            echo "✅ Application deployed successfully to AKS!"
         }
     }
 }
