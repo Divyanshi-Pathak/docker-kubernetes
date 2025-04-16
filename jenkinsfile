@@ -38,7 +38,7 @@ pipeline {
 
         stage('Terraform Init & Apply') {
             steps {
-                dir('terraform') {
+                dir('Terraform_module') {
                     bat 'terraform init'
                     bat 'terraform apply -auto-approve'
                 }
@@ -73,10 +73,10 @@ pipeline {
 
     post {
         failure {
-            echo "❌ Build failed."
+            echo " Build failed."
         }
         success {
-            echo "✅ Application deployed successfully to AKS!"
+            echo "Application deployed successfully to AKS!"
         }
     }
 }
