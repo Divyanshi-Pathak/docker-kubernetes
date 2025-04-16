@@ -39,8 +39,11 @@ pipeline {
         stage('Terraform Init & Apply') {
             steps {
                 dir('Terraform_module') {
-                    bat 'terraform init'
-                    bat 'terraform apply -auto-approve'
+                   bat '''
+                       rmdir /s /q .terraform
+                       terraform init -upgrade
+                       terraform apply -auto-approve
+                   '''
                 }
             }
         }
