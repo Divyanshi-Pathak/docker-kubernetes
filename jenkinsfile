@@ -40,9 +40,12 @@ pipeline {
             steps {
                 dir('Terraform_module') {
                    bat '''
-                       rmdir /s /q .terraform
-                       terraform init -upgrade
-                       terraform apply -auto-approve
+                        set TF_LOG=DEBUG
+                        set TF_LOG_PATH=terraform_debug.log
+                        rmdir /s /q .terraform
+                        rmdir /s /q %APPDATA%\\terraform.d\\plugin-cache
+                        terraform init -upgrade
+                        terraform apply -auto-approve
                    '''
                 }
             }
