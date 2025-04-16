@@ -45,8 +45,7 @@ pipeline {
 
                         echo Cleaning up plugin cache...
                         rmdir /s /q .terraform
-                        rmdir /s /q %APPDATA%\\terraform.d\\plugin-cache
-                        rmdir /s /q .terraform.lock.hcl
+                        del /q .terraform.lock.hcl
 
                         echo Reinitializing Terraform...
                         terraform init -upgrade -reconfigure
