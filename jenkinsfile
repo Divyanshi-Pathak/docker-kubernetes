@@ -43,27 +43,14 @@ pipeline {
             steps {
                 dir('Terraform_module') {
                    bat '''
-                        set TF_LOG=DEBUG
-                        set TF_LOG_PATH=terraform_debug.log
-                        set TF_PLUGIN_CACHE_DIR=%CD%\\.terraform.d\\plugin-cache
-
-                        echo Cleaning up previous Terraform state...
-                        rmdir /s /q .terraform
-                        del /q .terraform.lock.hcl
-                        del /q tfplan.out
-                        del /q terraform_debug.log
-
-                        echo Creating plugin cache directory...
-                        mkdir .terraform.d\\plugin-cache
-
                         echo Initializing Terraform...
-                        terraform init -upgrade -reconfigure
+                        terraform init 
 
                         echo Creating Terraform Plan...
-                        terraform plan -out=tfplan.out
+                        terraform plan 
 
                         echo Applying Terraform Plan...
-                        terraform apply -auto-approve tfplan.out
+                        terraform apply -auto-approve 
                    '''
                 }
             }
